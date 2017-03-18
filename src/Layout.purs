@@ -4,7 +4,8 @@ import App.Counter as Counter
 import App.NotFound as NotFound
 import App.Routes (Route(Home, NotFound))
 import Prelude (($), map)
-import Pux.Html (Html, div, h1, p, text, nav, ul, li, link)
+import Pux.Html (Html, div, h1, p, text, nav, ul, li)
+import Pux.Router (link)
 
 data Action
   = Child (Counter.Action)
