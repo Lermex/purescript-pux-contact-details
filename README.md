@@ -1,25 +1,13 @@
-# pux-starter-app
-
-Starter [Pux](https://github.com/alexmingoia/purescript-pux/) application using
-webpack with hot-reloading and time-travel debug using
-[pux-devtool](https://github.com/alexmingoia/pux-devtool).
-
-See the [Guide](https://alexmingoia.github.io/purescript-pux) for help learning
-Pux.
-
-![Pux starter app animation](support/pux-starter-app.gif)
-
 ## Installation
 
 ```sh
-git clone git://github.com/alexmingoia/pux-starter-app.git example
-cd example
+git clone https://github.com/Lermex/purescript-pux-contact-details.git
+cd purescript-pux-contact-details
 npm install
 npm start
 ```
 
-Visit `http://localhost:3000` in your browser, edit `src/purs/Layout.purs`
-and watch the magic!
+Visit `http://localhost:3000` in your browser.
 
 ## Available scripts
 
