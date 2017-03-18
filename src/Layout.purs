@@ -8,7 +8,9 @@ import Data.Maybe (Maybe(..))
 import Data.Map as Map
 import Data.Map (Map)
 import Pux.Html (Html, img, div, h1, h2, p, text, nav, ul, li)
+import Pux.Html.Attributes (src)
 import Pux.Router (link)
+import Gravatar as Gravatar
 
 data Action
   = Child (Counter.Action)
@@ -54,6 +56,7 @@ viewUser user =
     []
     [ h2 [] [ text user.name ]
     , text user.email
+    , img [ src (Gravatar.url user.email) ] []
     ]
 
 navigation :: Html Action
