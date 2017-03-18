@@ -28,7 +28,8 @@ view :: State -> Html Action
 view state =
   div
     []
-    [ h1 [] [ text "Pux Starter App" ]
+    [ navigation
+    , h1 [] [ text "Pux Starter App" ]
     , p [] [ text "Change src/Layout.purs and watch me hot-reload." ]
     , case state.route of
         Home -> map Child $ Counter.view state.count
