@@ -24,7 +24,7 @@ config state = do
 
   pure
     { initialState: state
-    , update: fromSimple update
+    , update: update
     , view: view
     , inputs: [routeSignal] }
 

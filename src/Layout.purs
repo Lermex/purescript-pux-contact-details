@@ -1,39 +1,48 @@
 module App.Layout where
 
 import App.Counter as Counter
+import App.UserProfile as UserProfile
 import App.NotFound as NotFound
-import App.Routes (Route(..))
-import Prelude (($), map)
+import App.Routes as Route
+import App.Routes (Route)
+
+import Pux (EffModel, noEffects, mapState, mapEffects)
+import Network.HTTP.Affjax (AJAX, get)
+
+import Prelude hiding (div)
 import Data.Maybe (Maybe(..))
 import Data.Map as Map
 import Data.Map (Map)
 import Pux.Html (Html, img, div, h1, h2, p, text, nav, ul, li)
-import Pux.Html.Attributes (src)
 import Pux.Router (link)
-import Gravatar as Gravatar
+import Data.Argonaut (class DecodeJson, decodeJson, (.?))
+
 
 data Action
-  = Child (Counter.Action)
+  = CounterChild (Counter.Action)
+  | UserProfileChild (UserProfile.Action)
   | PageView Route
 
-type User =
-  { email :: String
-  , name  :: String }
-
 type State =
-  { route :: Route
-  , count :: Counter.State
-  , users :: Map Int User }
+  { route       :: Route
+  , count       :: Counter.State
+  , userProfile :: UserProfile.State }
 
 init :: State
 init =
-  { route: NotFound
+  { route: Route.NotFound
   , count: Counter.init
-  , users: Map.singleton 123 { email: "yom@artyom.me", name: "Artyom" } }
+  , userProfile: UserProfile.init }
 
-update :: Action -> State -> State
-update (PageView route) state = state { route = route }
-update (Child action) state = state { count = Counter.update action state.count }
+update :: Action -> State -> EffModel State Action (ajax :: AJAX)
+update (PageView route) state =
+  noEffects $ state { route = route }
+update (CounterChild action) state =
+  noEffects $ state { count = Counter.update action state.count }
+update (UserProfileChild action) state = do
+  mapEffects UserProfileChild $
+  mapState (\x -> state { userProfile = x }) $
+    UserProfile.update action state.userProfile
 
 view :: State -> Html Action
 view state =
@@ -43,20 +52,12 @@ view state =
     , h1 [] [ text "Pux Starter App" ]
     , p [] [ text "Change src/Layout.purs and watch me hot-reload." ]
     , case state.route of
-        Home -> map Child $ Counter.view state.count
-        User n -> case Map.lookup n state.users of
-          Just user -> viewUser user
-          Nothing   -> text "User not found"
-        NotFound -> NotFound.view state
-    ]
-
-viewUser :: User -> Html Action
-viewUser user =
-  div
-    []
-    [ h2 [] [ text user.name ]
-    , text user.email
-    , img [ src (Gravatar.url user.email) ] []
+        Route.Home ->
+          map CounterChild $ Counter.view state.count
+        Route.User n ->
+          map UserProfileChild $ UserProfile.view state.userProfile
+        Route.NotFound ->
+          NotFound.view state
     ]
 
 navigation :: Html Action
