@@ -5,13 +5,17 @@ import App.Layout (Action(PageView), State, view, update)
 import Control.Bind ((=<<))
 import Control.Monad.Eff (Eff)
 import DOM (DOM)
+import Network.HTTP.Affjax (AJAX)
 import Prelude (bind, pure)
-import Pux (App, Config, CoreEffects, fromSimple, renderToDOM, start)
+import Pux (App, Config, CoreEffects, EffModel, fromSimple, renderToDOM, start)
 import Pux.Devtool (Action, start) as Pux.Devtool
 import Pux.Router (sampleUrl)
 import Signal ((~>))
 
-type AppEffects = (dom :: DOM)
+type AppEffects = (dom :: DOM, ajax :: AJAX)
+
+update' :: Action -> State -> EffModel State Action AppEffects
+update' = update
 
 -- | App configuration
 config :: forall eff. State -> Eff (dom :: DOM | eff) (Config State Action AppEffects)
@@ -24,7 +28,7 @@ config state = do
 
   pure
     { initialState: state
-    , update: update
+    , update: update'
     , view: view
     , inputs: [routeSignal] }
 

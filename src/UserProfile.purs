@@ -23,7 +23,7 @@ type State = {
 init :: State
 init = {displayedUser: Left "No user yet"}
 
-update :: Action -> State -> EffModel State Action (ajax :: AJAX)
+update :: forall eff. Action -> State -> EffModel State Action (ajax :: AJAX | eff)
 update (RequestUser i) state = 
   { state: state {displayedUser = Left "Requesting user"}
   , effects: [ do

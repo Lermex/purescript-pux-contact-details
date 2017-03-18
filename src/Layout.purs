@@ -34,7 +34,7 @@ init =
   , count: Counter.init
   , userProfile: UserProfile.init }
 
-update :: Action -> State -> EffModel State Action (ajax :: AJAX)
+update :: forall eff. Action -> State -> EffModel State Action (ajax :: AJAX | eff)
 update (PageView route) state =
   noEffects $ state { route = route }
 update (CounterChild action) state =
