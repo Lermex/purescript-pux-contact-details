@@ -1,22 +1,18 @@
 module App.Layout where
 
 import App.Counter as Counter
-import App.UserProfile as UserProfile
 import App.NotFound as NotFound
 import App.Routes as Route
+import App.UserProfile as UserProfile
 import App.Routes (Route)
-
+import Network.HTTP.Affjax (AJAX)
 import Pux (EffModel, noEffects, mapState, mapEffects)
-import Network.HTTP.Affjax (AJAX, get)
-
-import Prelude hiding (div)
-import Data.Maybe (Maybe(..))
-import Data.Map as Map
-import Data.Map (Map)
-import Pux.Html (Html, img, div, h1, h2, p, text, nav, ul, li)
+import Pux.Html (Html, div, h1, p, text, nav, ul, li)
 import Pux.Router (link)
-import Data.Argonaut (class DecodeJson, decodeJson, (.?))
+import Prelude hiding (div)
+import Data.Maybe
 
+import Debug
 
 data Action
   = CounterChild (Counter.Action)
@@ -46,6 +42,10 @@ update (UserProfileChild action) state = do
 
 view :: State -> Html Action
 view state =
+  let xxx0 = log state in
+  let xxx1 = log state.route in
+  let xxx2 = log state.count in
+  let xxx3 = log state.userProfile in
   div
     []
     [ navigation
@@ -53,9 +53,10 @@ view state =
     , p [] [ text "Change src/Layout.purs and watch me hot-reload." ]
     , case state.route of
         Route.Home ->
+          let yyy = log state.count in
           map CounterChild $ Counter.view state.count
         Route.User n ->
-          map UserProfileChild $ UserProfile.view state.userProfile
+          map UserProfileChild $ UserProfile.view (state.userProfile {userIndex = Just n})
         Route.NotFound ->
           NotFound.view state
     ]

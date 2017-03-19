@@ -4,6 +4,8 @@ import Prelude ((+), (-), const, show)
 import Pux.Html (Html, div, span, button, text)
 import Pux.Html.Events (onClick)
 
+import Debug
+
 data Action = Increment | Decrement
 
 type State = Int
@@ -17,6 +19,7 @@ update Decrement state = state - 1
 
 view :: State -> Html Action
 view state =
+  let xxx = log state in
   div
     []
     [ button [ onClick (const Increment) ] [ text "Increment" ]

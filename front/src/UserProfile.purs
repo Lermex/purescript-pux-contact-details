@@ -18,21 +18,24 @@ import App.User
 data Action = RequestUser Int | ReceiveUser (Either String User)
 
 type State = {
+  userIndex :: Maybe Int,
   displayedUser :: Either String User }
 
 init :: State
-init = {displayedUser: Left "No user yet"}
+init = { displayedUser: Left "No user yet"
+       , userIndex: Nothing }
 
 update :: forall eff. Action -> State -> EffModel State Action (ajax :: AJAX | eff)
-update (RequestUser i) state = 
-  { state: state {displayedUser = Left "Requesting user"}
+update (RequestUser i) state =
+  { state: state { displayedUser = Left "Requesting user"
+                 , userIndex = Just i }
   , effects: [ do
       res <- attempt $ get ("http://localhost:5000/users/" <> show i)
       let decode r = decodeJson r.response :: Either String User
       pure $ ReceiveUser (either (Left <<< show) decode res)
     ]
   }
-update (ReceiveUser x) state = 
+update (ReceiveUser x) state =
   noEffects $ state {displayedUser = x}
 
 {-
@@ -48,7 +51,9 @@ view state =
 
 view :: State -> Html Action
 view state = case state.displayedUser of
-  Left err -> text err
+  Left err -> case state.userIndex of
+    Nothing -> text err
+    Just i  -> text err $> RequestUser i
   Right (User user) ->
     div
       []
